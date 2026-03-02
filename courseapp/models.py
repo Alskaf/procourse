@@ -1,6 +1,5 @@
 from django.db import models
 
-# Create your models here.
 
 
 class Course(models.Model):
@@ -13,11 +12,20 @@ class Course(models.Model):
 
 
 
-class lesson(models.Model):
+class Lesson(models.Model):
+    DAY_CHOICES = [
+        ("sat", "Saturday"),
+        ("sun", "Sunday"),
+        ("mon", "Monday"),
+        ("tue", "Tuesday"),
+        ("wed", "Wednesday"),
+        ("thu", "Thursday"),
+        ("fri", "Friday"),
+    ]
     course_name=models.ForeignKey(Course , on_delete=models.CASCADE)
-    day=models.DateField()
-    time=models.DateTimeField()
-    description=models.TextField()
+    day=models.CharField(max_length=255 , choices=DAY_CHOICES, null=True)
+    time=models.DateTimeField(null=True , blank=True)
+    description=models.TextField(null=True , blank=True)
 
 
 

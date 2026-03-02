@@ -213,10 +213,10 @@ h6 {
   #navmenu ul li a,
   #navmenu ul li a:focus {
     color: var(--nav-color);
-    font-size: 100px;
+    font-size: 20px;
     padding: 0 2px;
     font-family: var(--nav-font);
-    font-weight: 700;
+    font-weight: 200;
     display: flex;
     align-items: center;
     justify-content: space-between;
