@@ -3,6 +3,11 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login
 from django.contrib import messages
 from .models import Course , Lesson
+from django.conf import settings
+from django.contrib.auth.decorators import login_required
+import stripe
+
+stripe.api_key = settings.STRIPE_SECRET_KEY
 
 
 def index(request):
@@ -69,3 +74,49 @@ def handlesignup(request):
             return redirect('handlesignup')
 
     return render(request, "auth/signup.html")
+
+
+@login_required
+def CreateCheckoutSessionView(request, course_id):
+    course = Course.objects.get(id=course_id)
+
+    YOUR_DOMAIN = f"{request.scheme}://{request.get_host()}"
+    
+    checkout_session = stripe.checkout.Session.create(
+        payment_method_types=['card'],
+        line_items=[
+            {
+                'price_data': {
+                    'currency': 'usd',
+                    'unit_amount': int((course.price or 0) * 100),
+                    'product_data': {
+                        'name': course.name,
+                    },
+                },
+                'quantity': 1,
+            },
+        ],
+        metadata = {
+            'course_id': course_id,
+            'user_email': request.user.email
+        },
+        
+        mode='payment',
+
+        success_url=YOUR_DOMAIN + f'/payment-success/{course_id}/',
+        cancel_url=YOUR_DOMAIN + '/payment-cancel/',
+    )
+
+    return redirect(checkout_session.url)
+
+
+
+def payment_success(request, course_id):
+    course = Course.objects.get(id=course_id)
+    return render(request, 'payment_success.html', {'course': course})
+
+def payment_cancel(request):
+    return render(request, 'payment_cancel.html')
+
+def payment_failed(request):
+    return render(request, 'payment_failed.html')

@@ -7,6 +7,7 @@ class Course(models.Model):
     name=models.CharField(max_length=255)
     techers=models.CharField(max_length=255)
     date=models.DateField(null=True , blank=True)
+    price=models.FloatField(null=True , blank=True)
     description=models.TextField()
     imag=models.ImageField(upload_to="course/", blank=True)
 

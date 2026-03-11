@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
 from pathlib import Path
+from decouple import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -24,7 +25,7 @@ SECRET_KEY = 'django-insecure-a(*u=7#p&&#aymr_4v495jvixc(gu))a@_hl)pgpiitnx7+0t&
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-
+#'aboodboot.pythonanywhere.com'
 ALLOWED_HOSTS = []
 
 
@@ -119,3 +120,7 @@ STATIC_URL = 'static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 MEDIA_URL='media/'
 MEDIA_ROOT=BASE_DIR / "media"
+
+
+STRIPE_SECRET_KEY = config('STRIPE_SECRET_KEY')
+STRIPE_PUBLISHABLE_KEY = config('STRIPE_PUBLISHABLE_KEY')
