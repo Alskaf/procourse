@@ -55,6 +55,7 @@ def handlesignup(request):
         email = request.POST.get('email')
         pass1 = request.POST.get('pass1')
         pass2 = request.POST.get('pass2')
+        phone = request.POST.get('phone')
 
         if pass1 != pass2:
             messages.error(request, "Passwords do not match.")
@@ -65,7 +66,7 @@ def handlesignup(request):
             return redirect('handlesignup')
             
         try:
-            user = User.objects.create_user(username=email, email=email, password=pass1)
+            user = User.objects.create_user(username=email, email=email, password=pass1 , first_name=phone)
             user.save()
             messages.success(request, "Account created successfully. Please sign in.")
             return redirect('handlelogin')
