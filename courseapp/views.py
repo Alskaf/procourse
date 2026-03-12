@@ -29,23 +29,22 @@ def handlelogin(request):
         remember_me = request.POST.get('rememberMe')
 
         try:
-            # Find the user by email first, since default Auth uses username
-            user_obj = User.objects.get(email=email)
-            user = authenticate(request, username=user_obj.username, password=password)
+            # Find the user by email
+            user_obj = User.objects.filter(email=email).first()
+            if user_obj:
+                user = authenticate(request, username=user_obj.username, password=password)
+                if user is not None:
+                    login(request, user)
+                    if not remember_me:
+                        request.session.set_expiry(0)
+                    messages.success(request, "Successfully logged in.")
+                    return redirect('index')
             
-            if user is not None:
-                login(request, user)
-                if not remember_me:
-                    # Session expires when the user closes the browser
-                    request.session.set_expiry(0)
-                messages.success(request, "Successfully logged in.")
-                return redirect('index')
-            else:
-                messages.error(request, "Invalid credentials.")
-                return redirect('handlelogin')
+            messages.error(request, "Invalid email or password.")
+            return redirect('handlelogin')
                 
-        except User.DoesNotExist:
-            messages.error(request, "Invalid credentials.")
+        except Exception as e:
+            messages.error(request, "An error occurred during login.")
             return redirect('handlelogin')
 
     return render(request, "auth/login.html")
